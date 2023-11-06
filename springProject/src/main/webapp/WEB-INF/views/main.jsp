@@ -7,6 +7,11 @@
 <title>Insert title here</title>
 </head>
 <body>
-	메인페이지
+	
+	<jsp:include page="common/header.jsp"/>
+	<div style="height: 600px">
+	</div>
+	<jsp:include page="common/footer.jsp"/>
+	
 </body>
 </html>
