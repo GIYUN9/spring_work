@@ -30,7 +30,47 @@
         STATUS
 	FROM MEMBER
 	WHERE USER_ID = #{userId}
-	AND USER_PWD = #{userPwd}
+	<!-- AND USER_PWD = #{userPwd} -->
+	AND STATUS = 'Y'
+	</select>
+	
+	<!-- 회원가입을 위한 쿼리문 -->
+	<insert id="insertMember">
+	INSERT INTO MEMBER(
+		USER_ID,
+		USER_PWD,
+		USER_NAME,
+		EMAIL,
+		GENDER,
+		AGE,
+		PHONE,
+		ADDRESS
+	)
+	VALUES(
+		#{userId},
+		#{userPwd},
+		#{userName},
+		#{email},
+		#{gender},
+		#{age},
+		#{phone},
+		#{address}
+	)
+	</insert>
+	<select id="selectMember" resultMap="memberResult">
+	SELECT USER_ID,
+        USER_PWD,
+        USER_NAME,
+        EMAIL,
+        GENDER,
+        AGE,
+        PHONE,
+        ADDRESS,
+        ENROLL_DATE,
+        MODIFY_DATE,
+        STATUS
+	FROM MEMBER
+	WHERE USER_ID = #{userId}
 	AND STATUS = 'Y'
 	</select>
 </mapper>

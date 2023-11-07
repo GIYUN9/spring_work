@@ -3,6 +3,7 @@ package com.kh.spring.member.controller;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,9 @@ public class MemberController {
 	 */
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
 	/*
 	 * Spring에서 파라미터(요청시 전달값)을 받는 방법
@@ -160,10 +164,36 @@ public class MemberController {
 	@RequestMapping(value = "/login.me")
 	public ModelAndView loginMember(Member m, ModelAndView mv, HttpSession session) {
 
-		Member loginUser = memberService.loginMember(m);
+		//Member loginUser = memberService.loginMember(m);
+		
+		//암호화 작업전
+//		if(loginUser == null) { //로그인실패 => 에러문구를 requestScope에 담고 에러페이지로 포워딩
+//			//model.addAttribute("errorMsg", "로그인 실패");
+//			mv.addObject("errorMsg", "로그인  실패");
+//			
+//			// /WEB-INF/views/		/common/errorPage		.jsp
+//			mv.setViewName("common/errorPage");
+//		}else { // 로그인성공 =>? sessionScope에 로그인유저 담아서 메인으로 url재요청
+//			session.setAttribute("loginUser", loginUser);
+//			
+//			mv.setViewName("redirect:/");
+//		}
 		
 		
-		if(loginUser == null) { //로그인실패 => 에러문구를 requestScope에 담고 에러페이지로 포워딩
+		//암호화 작업 후
+		// Member m의 userId : 사용자가 입력한 아이디
+		//		  m의 userPwd : 사용자가 입력한 비밀번호(평문)
+		
+		Member loginUser = memberService.loginMember(m);// 아이디로만 가져오기
+		
+		// loginUser userId : 아이디로 호출한 데이터베이스에서 가져온 아이디
+		// loginUser userPwd : DB에 기록된 암호화된 비밀번호
+		
+		//bcryptPasswordEncoder객체matches()
+		// matches(평문, 암호문)을 작성하면 내부적으로 복호화등의 작업이 이루어짐
+		// 두 구문이 일치하는지 확인 후 일치하면 true를 반환
+		
+		if(loginUser == null || !bcryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd())) { //로그인실패 => 에러문구를 requestScope에 담고 에러페이지로 포워딩
 			//model.addAttribute("errorMsg", "로그인 실패");
 			mv.addObject("errorMsg", "로그인  실패");
 			
@@ -174,7 +204,6 @@ public class MemberController {
 			
 			mv.setViewName("redirect:/");
 		}
-		
 		return mv;
 	}
 	
@@ -188,4 +217,51 @@ public class MemberController {
 		return mv;
 	}
 	
+	@RequestMapping(value = "/enrollForm.me")
+	public String enrollForm(){
+		return "member/memberEnrollForm";
+	}
+	
+	@RequestMapping(value = "/insert.me")
+	public String insertMember(Member m, HttpSession session, Model model) {
+		System.out.println(m);
+		// 1. 한글깨짐문제 발생 ->> web.xml에 스프링에서 제공하는 인코딩 필터 등록
+		// 2. 나이를 입력하지 않았을 경우 int자료형에 빈 문자열이 넘어와 자료형이 맞지 않는 문제발생
+		//	(400 Bad Request Error발생)
+		// Member클래스의 age자료형을 int-> String으로 변경
+		// 3. 비밀번호가 사용자가 입력한 있는 그대로의 평문
+		// Bcrypt방식을 이용해서 암호화를 한 후 저장을 하겠다.
+		// => 스프링 시큐리팀 모듈에서 제공<pom.xml에 라이브러리 추가>
+		
+		//암호화 작업
+		String encPwd = bcryptPasswordEncoder.encode(m.getUserPwd());
+//		System.out.println("암호문 : " + encPwd);
+		
+		m.setUserPwd(encPwd); // Member객체에 userPwd필드에 평문이 아닌 암호문으로 변경
+		
+		int result = memberService.insertMember(m); // 아이디로만 멤버객체 가져오기
+		
+		if(result > 0) {
+			session.setAttribute("alertMsg", "성공적으로 회원가입이 완료되었습니다.");
+			return "redirect:/";
+		} else {
+			model.addAttribute("errorMsg", "회원가입 실패");
+			return "common/errorPage";
+		}
+	}
+	
+	@RequestMapping(value = "/myPage.me")
+	public String selectMember(String userId, HttpSession session, Model model) {
+		
+		Member loginUser = memberService.selectMember(userId);
+		System.out.println(loginUser);
+		if(loginUser == null) { //아이디로 정보 찾기 실패
+			
+			return "main";
+		} else { //성공
+			session.setAttribute("loginUser", loginUser);
+			
+			return "member/myPage";
+		}
+	}
 }

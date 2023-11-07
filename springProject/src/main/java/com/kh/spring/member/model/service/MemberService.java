@@ -18,4 +18,7 @@ public interface MemberService {
 	
 	//아이디중복체크(select)
 	int idCheck(String checkId);
+	
+	//마이페이지용 selectMember
+	Member selectMember(String userId);
 }

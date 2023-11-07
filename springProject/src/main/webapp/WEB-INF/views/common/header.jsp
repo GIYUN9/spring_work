@@ -66,7 +66,13 @@
 </style>
 </head>
 <body>
-
+	<c:if test="${ not empty alertMsg }">
+		<script>
+			alert("${alertMsg}");
+		</script>
+		<c:remove var="alertMsg" scope="session"/>
+	</c:if>
+	
 	<div id="header">
         <div id="header_1">
             <div id="header_1_left">
@@ -83,7 +89,7 @@
 	                <c:otherwise>
 		                <!-- 로그인 후 -->
 		                <label>${loginUser.userName}님 환영합니다</label> &nbsp;&nbsp;
-		                <a href="myPage.me">마이페이지</a>
+		                <a href="myPage.me?userId=${loginUser.userId}">마이페이지</a>
 		                <a href="logout.me">로그아웃</a>
 	                </c:otherwise>
 	            </c:choose>         
