@@ -251,17 +251,49 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "/myPage.me")
-	public String selectMember(String userId, HttpSession session, Model model) {
+	public String selectMember() {
+		return "member/myPage";
+	}
+	
+	@RequestMapping(value = "/update.me")
+	public String updateMember(Member m, HttpSession session, Model model) {
 		
-		Member loginUser = memberService.selectMember(userId);
-		System.out.println(loginUser);
-		if(loginUser == null) { //아이디로 정보 찾기 실패
+		int result = memberService.updateMember(m);
+		
+		if(result > 0) {
+			// DB로부터 수정된 회원정보를 다시 조회해서
+			// session영역에 loginUser라는 키값으로 덮어씌워야한다.
+			session.setAttribute("loginUser", memberService.loginMember(m));
+			session.setAttribute("alertMsg", "회원정보 수정에 성공하였습니다.");
+			return "redirect:/myPage.me";
+		} else {
+			model.addAttribute("errorMsg", "회원정보 수정에 실패하였습니다.");
+			return "common/errorPage";
+		}
+	}
+	
+	@RequestMapping(value = "/delete.me")
+	public String deleteMember(Member m, HttpSession session) {
+		
+		//1. 암호화된 비밀번호 가져오기
+		String encPwd = ((Member)session.getAttribute("loginUser")).getUserPwd();
+		
+		if(bcryptPasswordEncoder.matches(m.getUserPwd(), encPwd)) {
+			//비밀번호 일치 => 탈퇴가능
+			int result = memberService.deleteMember(m.getUserId());
 			
-			return "main";
-		} else { //성공
-			session.setAttribute("loginUser", loginUser);
-			
-			return "member/myPage";
+			if(result > 0) { // 탈퇴처리 성공
+				session.removeAttribute("loginUser");
+				session.setAttribute("alertMsg", "탈퇴 성공");
+				return "redirect:/";
+			}else { // 탈퇴처리 실패
+				session.setAttribute("alertMsg", "탈퇴 실패");
+				return "redirect:/myPage.me";
+			}
+		} else {
+			//비밀번호 불일치 => 탈퇴불가
+			session.setAttribute("alertMsg", "비밀번호를 다시 확인해주세요.");
+			return "redirect:/myPage.me";
 		}
 	}
 }

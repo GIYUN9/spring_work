@@ -51,6 +51,13 @@
                 	})
                 	
                 	/*자바스크립트만 사용하여 상기제이쿼리구문 만들기*/
+                	
+                    // window.onload = function(){
+                    //     if("${loginUser.gender}" != ""){
+                    //         document.querySelector('input[value="${loginUser.gender}"]').checked= true;
+                    //     }
+                    // }
+                	
                 </script>
               
                 <br>
@@ -75,9 +82,9 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
-                <form action="" method="post">
+                <form action="delete.me" method="post">
                     <!-- Modal body -->
-                    <input type="hidden" name="userId" value="">
+                    <input type="hidden" name="userId" value="${loginUser.userId}">
                     <div class="modal-body">
                         <div align="center">
 				                            탈퇴 후 복구가 불가능합니다. <br>
@@ -85,7 +92,7 @@
                         </div>
                         <br>
                             <label for="userPwd" class="mr-sm-2">Password : </label>
-                            <input type="text" class="form-control mb-2 mr-sm-2" placeholder="Enter Password" id="userPwd" name=""> <br>
+                            <input type="text" class="form-control mb-2 mr-sm-2" placeholder="Enter Password" id="userPwd" name="userPwd"> <br>
                     </div>
                     <!-- Modal footer -->
                     <div class="modal-footer" align="center">

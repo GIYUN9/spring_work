@@ -57,20 +57,21 @@
 		#{address}
 	)
 	</insert>
-	<select id="selectMember" resultMap="memberResult">
-	SELECT USER_ID,
-        USER_PWD,
-        USER_NAME,
-        EMAIL,
-        GENDER,
-        AGE,
-        PHONE,
-        ADDRESS,
-        ENROLL_DATE,
-        MODIFY_DATE,
-        STATUS
-	FROM MEMBER
+	<update id="updateMember">
+	UPDATE MEMBER
+	SET USER_NAME = #{userName},
+		    EMAIL = #{email},
+		    AGE = #{age},
+		    PHONE = #{phone},
+		    ADDRESS = #{address},
+		    GENDER = #{gender},
+		    MODIFY_DATE = SYSDATE
 	WHERE USER_ID = #{userId}
 	AND STATUS = 'Y'
-	</select>
+	</update>
+	<update id="deleteMember">
+	UPDATE MEMBER
+	SET	STATUS = 'N'
+	WHERE USER_ID = #{userId}
+	</update>
 </mapper>

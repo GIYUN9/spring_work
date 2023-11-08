@@ -34,26 +34,19 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public int updateMember(Member m) {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return memberDao.updateMember(sqlSession, m);
 	}
 
 	@Override
 	public int deleteMember(String userId) {
-		// TODO Auto-generated method stub
-		return 0;
+		return memberDao.deleteMember(sqlSession, userId);
 	}
 
 	@Override
 	public int idCheck(String checkId) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public Member selectMember(String userId) {
-		
-		return memberDao.selectMember(sqlSession, userId);
 	}
 
 }
