@@ -22,7 +22,7 @@
                 <div class="form-group">
                     <label for="userId">* ID : </label>
                     <input type="text" class="form-control" id="userId" placeholder="Please Enter ID" name="userId" required>
-                    <div id="checkResult" style="font-size:0.7em; display:none;"></div>
+                    <div id="checkResult" style="font-size:0.7em; display:none;">이용가능한아이디입니다.</div>
 					<br>
                     <label for="userPwd">* Password : </label>
                     <input type="password" class="form-control" id="userPwd" placeholder="Please Enter Password" name="userPwd" required> <br>
@@ -53,12 +53,28 @@
                 </div> 
                 <br>
                 <div class="btns" align="center">
-                    <button type="submit" class="btn btn-primary disabled">회원가입</button>
+                    <button type="submit" class="btn btn-primary" disabled>회원가입</button>
                     <button type="reset" class="btn btn-danger">초기화</button>
                 </div>
             </form>
         </div>
         <br><br>
+        
+        <script>
+        	$(function(){
+        		const idInput = document.querySelector('#enrollForm input[name=userId]');
+        		let count = 0;
+        		
+        		idInput.onkeyup = function(ev){
+        			console.log(ev)
+        			count++;
+        			if(count >= 5){
+                		console.log('5번째임')
+                		//여기에 ajax로 중복체크하는 코드
+                	}
+        		}
+        	})
+        </script>
 
 
     </div>

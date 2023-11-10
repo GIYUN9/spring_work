@@ -57,6 +57,7 @@
 				BOARD_WRITER,
 				BOARD_CONTENT,
 				ORIGIN_NAME,
+				CHANGE_NAME,
 				CREATE_DATE
 		FROM BOARD
 		WHERE BOARD_NO = #{boardNo}
@@ -66,5 +67,14 @@
 		UPDATE BOARD
 			SET STATUS = 'N'
 		WHERE BOARD_NO = #{boardNo}
+	</update>
+	<update id="updateBoard">
+		UPDATE BOARD
+		   SET BOARD_TITLE = #{boardTitle},
+		       BOARD_CONTENT = #{boardContent},
+		       ORIGIN_NAME = #{originName},
+		       CHANGE_NAME = #{changeName}
+		 WHERE BOARD_NO = #{boardNo}
+		   AND STATUS = 'Y'
 	</update>
 </mapper>

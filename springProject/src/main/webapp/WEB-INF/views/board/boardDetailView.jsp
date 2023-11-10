@@ -68,7 +68,7 @@
 			</c:if>
              
              <form action="" method="post" id="postForm">
-           		<input type="hidden" name=bno value="${b.boardNo}">
+           		<input type="hidden" name="bno" value="${b.boardNo}">
            		<input type="hidden" name="filePath" value="${b.changeName}">
              </form>
              
@@ -79,7 +79,6 @@
 						// document.querySelector('#postForm').setAttribute('action', 'updateForm.bo');
 					} else{
                         $("#postForm").attr('action', 'delete.bo');
-                    	console.log('눌럿다');
 						// document.querySelector('#postForm').setAttribute('action', 'deleteForm.bo');
 					}
                     $("#postForm").submit();

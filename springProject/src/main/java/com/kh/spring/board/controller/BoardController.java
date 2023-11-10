@@ -53,7 +53,7 @@ public class BoardController {
 		//전달된 파일이 있을경우 파일명 수정후 서버 업로드 => 원본명, 서버업로드된 경로로 b에 담기(파일이 있을때만)
 		if(!upfile.getOriginalFilename().equals("")) {
 			
-			String changeName = saveFile(upfile, session);
+			String changeName = saveFile(upfile, session, "resources/uploadFiles/");
 			
 			b.setOriginName(upfile.getOriginalFilename());
 			b.setChangeName("resources/uploadFiles/" + changeName);
@@ -70,7 +70,7 @@ public class BoardController {
 		}
 	}
 	
-	public String saveFile(MultipartFile upfile, HttpSession session) {
+	public String saveFile(MultipartFile upfile, HttpSession session, String path) {
 		//파일명 수정 후 서버 업로드 시키기("음악스트리밍.png" => 20231109102712345.png)
 		//년월일시분초 + 랜덤숫자 5개 + 확장자
 		
@@ -89,7 +89,7 @@ public class BoardController {
 		String changeName = currentTime + ranNum + ext;
 		
 		//첨부파일 저장할 폴더의 물리적인 경우
-		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+		String savePath = session.getServletContext().getRealPath(path);
 		
 		try {
 			upfile.transferTo(new File(savePath + changeName));
@@ -135,6 +135,57 @@ public class BoardController {
 			return "common/errorMsg";
 		}
 		
+		
+	}
+	
+	@RequestMapping(value = "updateForm.bo")
+	public String updateForm(int bno, Model model) {
+		
+		//현재 내가 수정하기를 클릭한 게시글에 대한 정보를 가지고 이동
+		model.addAttribute("b", boardService.selectBoard(bno));
+		
+		
+		return "board/boardUpdateForm";
+	}
+	
+	@RequestMapping(value = "update.bo")
+	public String updateBoard(Board b, MultipartFile reupfile, HttpSession session, Model model) {
+		
+//		System.out.println(b);
+//		System.out.println(reupfile);
+		
+		// 새로운 첨부파일 존재유무 확인
+		
+		if(!reupfile.getOriginalFilename().equals("")) {
+			// 새로운 첨부파일 서버 업로드
+			String changeName = saveFile(reupfile, session, "resources/uploadFiles/");
+			
+			// 새로운 첨부파일 있다면 => 기존 첨부파일 삭제
+			if(b.getOriginName() != null) {
+				new File(session.getServletContext().getRealPath(b.getChangeName())).delete();
+			}
+			
+			// b객체에 새로운 첨부파일 정보(원본명, 저장경로) 저장
+			b.setOriginName(reupfile.getOriginalFilename());
+			b.setChangeName("resources/uploadFiles/" + changeName);
+		}
+		
+		// b객체 update
+		
+		int result = boardService.updateBoard(b);
+		
+		// 성공유무 확인 후 페이지 리턴
+		
+		if(result > 0) {
+			//성공
+			session.setAttribute("alertMsg", "게시글 수정 성공");
+			session.setAttribute("b", b);
+			return "redirect:detail.bo?bno=" + b.getBoardNo();
+		} else {
+			//실패
+			model.addAttribute("errorMsg", "게시글 수정 실패");
+			return "common/errorMsg";
+		}
 		
 	}
 }
