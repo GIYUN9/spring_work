@@ -63,15 +63,43 @@
         <script>
         	$(function(){
         		const idInput = document.querySelector('#enrollForm input[name=userId]');
-        		let count = 0;
-        		
+                let eventFlag;
         		idInput.onkeyup = function(ev){
-        			console.log(ev)
-        			count++;
-        			if(count >= 5){
-                		console.log('5번째임')
-                		//여기에 ajax로 중복체크하는 코드
-                	}
+                    clearTimeout(eventFlag);
+                    eventFlag = setTimeout(function(){
+                        if(idInput.value.length >=5){
+                            $.ajax({
+                                url: 'idCheck.me',
+                                data: {checkId : idInput.value},
+                                success: function(result){
+                                    const checkResult = document.querySelector("#checkResult");
+                                    console.log(result);
+                                    if(result === 'NNNNN'){ //사용불가능한 경우
+                                        document.querySelector("#enrollForm [type='submit']").disabled = true;
+                                        checkResult.style.display = 'block';
+                                        checkResult.style.color = 'red';
+                                        checkResult.innerText = "이미사용중인 아이디입니다.";
+                                    }else{ // 사용가능한경우
+                                        //회원가입버튼 활성화
+                                        document.querySelector("#enrollForm [type='submit']").disabled = false;
+                                        //사용가능한 아이디입니다. 화면 출력
+                                        checkResult.style.display = 'block';
+                                        checkResult.style.color = 'green';
+                                        checkResult.innerText = "사용가능한 아이디입니다.";
+                                    }
+                                },
+                                error: function(){
+                                    console.log("아이디 중복체크 ajax통신 실패");
+                                }
+                            })
+                        } else{
+                            document.querySelector("#enrollForm [type='submit']").disabled = true;
+                            checkResult.style.display = 'none';
+
+                        }
+                    }, 300);
+
+        			
         		}
         	})
         </script>

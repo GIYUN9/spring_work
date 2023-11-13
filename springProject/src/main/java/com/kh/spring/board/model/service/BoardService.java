@@ -3,6 +3,7 @@ package com.kh.spring.board.model.service;
 import java.util.ArrayList;
 
 import com.kh.spring.board.model.vo.Board;
+import com.kh.spring.board.model.vo.Reply;
 import com.kh.spring.common.model.vo.PageInfo;
 
 public interface BoardService {
@@ -27,4 +28,10 @@ public interface BoardService {
 	
 	//게시글 수정서비스 (update)
 	int updateBoard(Board b);
+	
+	//댓글리스트 조회
+	ArrayList<Reply> selectReplyList(int bno);
+	
+	//댓글작성
+	int insertReply(Reply r);
 }

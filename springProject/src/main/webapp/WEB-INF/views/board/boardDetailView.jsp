@@ -90,45 +90,93 @@
             <!-- 댓글 기능은 나중에 ajax 배우고 나서 구현할 예정! 우선은 화면구현만 해놓음 -->
             <table id="replyArea" class="table" align="center">
                 <thead>
-                	
-                    <tr>
-                        <th colspan="2">
-                            <textarea class="form-control" readonly cols="55" rows="2" style="resize:none; width:100%;">로그인 후 이용 가능합니다.</textarea>
-                        </th>
-                        <th style="vertical-align:middle"><button class="btn btn-secondary disabled">등록하기</button></th>
-                    </tr>
-                		
-                    
-                     <tr> 
-                        <th colspan="2">
-                            <textarea class="form-control" id="content" cols="55" rows="2" style="resize:none; width:100%;"></textarea>
-                        </th>
-                        <th style="vertical-align:middle"><button class="btn btn-secondary" onclick="addReply();">등록하기</button></th>
-                    </tr>
-                            
-                
-                    
-                    
+                	<c:choose>
+                		<c:when test="${empty loginUser }">
+		                    <tr>
+		                        <th colspan="2">
+		                            <textarea class="form-control" readonly cols="55" rows="2" style="resize:none; width:100%;">로그인 후 이용 가능합니다.</textarea>
+		                        </th>
+		                        <th style="vertical-align:middle"><button class="btn btn-secondary disabled">등록하기</button></th>
+		                    </tr>
+	                	</c:when>	
+	                    <c:otherwise>
+						<tr> 
+		                    <th colspan="2">
+		                    	<textarea class="form-control" id="content" cols="55" rows="2" style="resize:none; width:100%;"></textarea>
+		                    </th>
+		                    	<th style="vertical-align:middle"><button class="btn btn-secondary" onclick="addReply();">등록하기</button></th>
+		                    </tr>
+	                    </c:otherwise>
+                    </c:choose>
+
                     <tr>
                         <td colspan="3">댓글(<span id="rcount">3</span>)</td>
                     </tr>
-                    <tr>
-                        <th>admin</th>
-                        <td>댓글남깁니다</td>
-                        <td>2022-05-10</td>
-                    </tr>
-                    <tr>
-                        <th>admin</th>
-                        <td>test샘플</td>
-                        <td>2022-08-10</td>
-                    </tr>
                 </thead>
                 <tbody>
-                  
+                    
                 </tbody>
             </table>
         </div>
         <br><br>
+        
+        <script>
+        	$(function(){
+                //댓글조회하는 함수호출
+                selectReplyList();
+            })
+
+            function selectReplyList(){
+                $.ajax({
+                    url: "rlist.bo",
+                    data: {
+                    	bno : ${b.boardNo}
+                    },
+                    success: function(list){
+						let str = "";
+                        for(reply of list){
+                            str += ("<tr>" +
+                                        "<th>"+ reply.replyWriter +"</th>" +
+                                        "<td>"+ reply.replyContent +"</td>" +
+                                        "<td>"+ reply.createDate +"</td>" +
+                                    "</tr>")
+                        }
+
+                        $("#replyArea tbody").html(str);
+                        $("#rcount").html(list.length);
+                        // document.querySelector("#replyArea tbody").innerHTML = str;
+                        // document.querySelector("#rcount").innerHTML = list.length;
+						
+                    },
+                    error: function(){
+                        // 댓글리스트 못가져옴 = 에러
+                        
+                    }
+                })
+            }
+        	
+        	function addReply() {
+        		$.ajax({
+                    url: "insertReply.bo",
+                    data: {
+                    	replyContent: $("#content").val(),
+                    	refBNo: '${b.boardNo}',
+                    	replyWriter: '${loginUser.userId}'
+                    },
+                    success: function(res){
+                    	//성공시 다시그려주기
+                    	if(res === "success"){
+                    		selectReplyList();
+                    		$("#content").val("");
+                    	}
+                    },
+                    error: function(){
+                    	// 댓글리스트 못가져옴 = 에러
+                    }
+                })
+			}
+        	
+        </script>
 
     </div>
     

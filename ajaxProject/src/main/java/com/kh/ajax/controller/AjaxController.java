@@ -109,7 +109,7 @@ public class AjaxController {
 	public String ajaxMethod1(String name, int age){
 		
 		//Member m = new Member("user01", "pass01", name, age, "01022224444");
-//		return new Gson().toJson(m);
+		//return new Gson().toJson(m);
 		ArrayList<Member> list = new ArrayList();
 		list.add(new Member("user01", "pass01", name, age, "01022224424"));
 		list.add(new Member("user02", "pass02", name, age, "01022224434"));

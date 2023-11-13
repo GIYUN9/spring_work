@@ -12,6 +12,14 @@
 		<result column="CREATE_DATE" property="createDate"/>
 		<result column="STATUS" property="status"/>
 	</resultMap>
+	<resultMap type="Reply" id="ReplyResult">
+		<result column="REPLY_NO" property="replyNo"/>
+		<result column="REPLY_CONTENT" property="replyContent"/>
+		<result column="REF_BNO" property="refBNo"/>
+		<result column="REPLY_WRITER" property="replyWriter"/>
+		<result column="CREATE_DATE" property="createDate"/>
+		<result column="STATUS" property="status"/>
+	</resultMap>
 	<select id="selectListCount" resultType="_int">
 		SELECT COUNT(*)
 		FROM BOARD
@@ -77,4 +85,28 @@
 		 WHERE BOARD_NO = #{boardNo}
 		   AND STATUS = 'Y'
 	</update>
+	<!-- 댓글조회쿼리문 -->
+	<select id="selectReplyList" resultMap="ReplyResult">
+		SELECT REPLY_NO,
+				REPLY_CONTENT,
+				REPLY_WRITER,
+				TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS "CREATE_DATE"
+		FROM REPLY
+		WHERE REF_BNO = #{bno}
+			AND STATUS = 'Y'
+		ORDER BY REPLY_NO DESC
+	</select>
+	<!-- 댓글추가 쿼리문 -->
+	<insert id="insertReply">
+		INSERT INTO REPLY (REPLY_NO,
+						REPLY_CONTENT,
+						REF_BNO,
+						REPLY_WRITER
+						)
+		VALUES (SEQ_RNO.NEXTVAL,
+				#{replyContent},
+				#{refBNo},
+				#{replyWriter}
+				)
+	</insert>
 </mapper>
