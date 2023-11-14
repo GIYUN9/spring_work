@@ -45,5 +45,12 @@
 		단점 : bean갯수가 많아지면 오히려 관리하기 어렵다.
 			 여러개발자가 같은 xml파일을 수정하면 충돌이 일어날 수 있다.
 	 -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/myPage.me"/>
+			<mapping path="/enrollForm.bo"/>
+			<beans:bean class="com.kh.spring.common.interceptor.Logininterceptor" id="Logininterceptor"/>
+		</interceptor>
+	</interceptors>
 	
 </beans:beans>

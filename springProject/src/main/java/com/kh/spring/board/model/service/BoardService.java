@@ -34,4 +34,7 @@ public interface BoardService {
 	
 	//댓글작성
 	int insertReply(Reply r);
+	
+	//TOP-N분석 - 조회수가 높은 board 5개 가져오기
+	ArrayList<Board> selectTopBoardList();
 }
