@@ -29,7 +29,7 @@ public class Test1 {
 		JavaMailSenderImpl sender = new JavaMailSenderImpl();
 		sender.setHost("smtp.gmail.com");
 		sender.setPort(587); //gmail: 587 다른메일은 찾아봐야한다.
-		sender.setUsername("GIYUN8520@gmail.com");
+		sender.setUsername("이메일주소");
 		sender.setPassword("brpw~~~"); //깃에 올린때 반드시 지울것.
 		
 		//옵션설정
