@@ -44,10 +44,10 @@ public class Test1 {
 		message.setSubject("이메일 전송 테스트(제목)");
 		message.setText("이메일 전송 테스트 첫번째입니다.(내용)");
 		
-		String[] to = {"GIYUN8520@gmail.com"};
+		String[] to = {"GIYUN8520@gmail.com"}; //받는사람
 		message.setTo(to);
 		
-		String[] cc = {"GIYUN8520@gmail.com"};
+		String[] cc = {"GIYUN8520@gmail.com"}; //참조
 		message.setCc(cc);
 		
 		sender.send(message);
