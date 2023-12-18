@@ -21,6 +21,8 @@ public class Run {
 		String url = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty";
 		url += "?serviceKey=" + SERVICE_KEY;
 		url += "&sidoName=" + URLEncoder.encode("서울" ,"UTF-8"); //요청값에 한글이있다면 인코딩 해줘야한다.
+		url += "&sidoName=" + URLEncoder.encode("부산" ,"UTF-8");
+		url += "&sidoName=" + URLEncoder.encode("대전" ,"UTF-8");
 		url += "&returnType=json";
 		
 //		System.out.println(url);
