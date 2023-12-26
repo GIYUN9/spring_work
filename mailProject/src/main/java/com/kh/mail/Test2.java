@@ -44,10 +44,10 @@ public class Test2 {
 		
 		MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
 		
-		String[] to = {"이메일주소""};
+		String[] to = {"이메일주소"};
 		helper.setTo(to);
 		
-		String[] cc = {"이메일주소""};
+		String[] cc = {"이메일주소"};
 		helper.setCc(cc);
 		
 		helper.setSubject("이메일 전송 테스트(제목)3");
@@ -70,10 +70,10 @@ public class Test2 {
 		MimeMessage message = sender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 		
-		String[] to = {"이메일주소""};
+		String[] to = {"이메일주소"};
 		helper.setTo(to);
 		
-		String[] cc = {"이메일주소""};
+		String[] cc = {"이메일주소"};
 		helper.setCc(cc);
 		
 		helper.setSubject("이메일 전송 테스트(제목)4");
